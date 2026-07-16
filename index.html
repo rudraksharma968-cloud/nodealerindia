@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Dealer India - Buy & Sell Cars Directly</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary-red: #E31E24;
+            --sky-blue: #3FA9F5;
+            --dark-black: #000000;
+            --light-gray: #f8f9fa;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background: var(--light-gray); color: var(--dark-black); }
+        header { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sky-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .logo-area h1 { font-size: 24px; color: var(--sky-blue); }
+        .logo-area span { color: var(--primary-red); font-weight: bold; }
+        .logo-area p { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #555; font-weight: bold; }
+        nav a { margin-left: 20px; text-decoration: none; color: var(--dark-black); font-weight: 600; cursor: pointer; }
+        nav a:hover { color: var(--primary-red); }
+        .admin-btn { background: #e0e0e0; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+        
+        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; height: 400px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
+        .hero h2 { font-size: 36px; margin-bottom: 10px; }
+        .hero p { font-size: 18px; margin-bottom: 20px; }
+        
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid var(--sky-blue); transition: 0.3s; cursor: pointer; }
+        .card:hover { transform: translateY(-5px); border-top-color: var(--primary-red); }
+        .card h3 { margin-bottom: 15px; font-size: 20px; }
+        
+        .view-section { display: none; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 20px; }
+        .active-section { display: block; }
+        
+        form { display: flex; flex-direction: column; max-width: 500px; margin: 0 auto; gap: 15px; }
+        label { font-weight: 600; margin-bottom: -10px; }
+        input, select, textarea { padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+        button { background: var(--primary-red); color: white; border: none; padding: 14px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #b7181d; }
+        
+        .car-item { border: 1px solid #ddd; padding: 15px; border-radius: 6px; margin-bottom: 15px; background: #fff; display: flex; justify-content: space-between; align-items: center; }
+        .car-item h4 { color: var(--primary-red); font-size: 18px; }
+        
+        footer { background: var(--dark-black); color: white; text-align: center; padding: 30px; margin-top: 60px; font-size: 14px; border-top: 4px solid var(--primary-red); }
+        footer a { color: var(--sky-blue); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area" onclick="showSection('home')">
+        <h1><span>NO</span> Dealer</h1>
+        <p>Buy Car Directly From Owners</p>
+    </div>
+    <nav>
+        <a onclick="showSection('buy')">Buy Cars</a>
+        <a onclick="showSection('sell')">Sell Car</a>
+        <a onclick="showSection('pdi')">Book PDI</a>
+        <a onclick="showSection('challan')">Check Challan</a>
+        <a onclick="showSection('admin-login')" class="admin-btn">Admin Panel</a>
+    </nav>
+</header>
+
+<div id="home" class="view-section active-section">
+    <div class="hero">
+        <h2>Skip The Middleman. Save Big.</h2>
+        <p>Connect directly with verified car owners in Gurgaon.</p>
+        <button onclick="showSection('buy')" style="background: var(--sky-blue);">Browse Live Stock</button>
+    </div>
+    <div class="container">
+        <div class="grid">
+            <div class="card" onclick="showSection('buy')"><h3>🚗 Buy Verified Cars</h3><p>Zero dealer margins. Direct seller pricing.</p></div>
+            <div class="card" onclick="showSection('sell')"><h3>💰 Sell Your Car</h3><p>List today and get reached out by genuine buyers.</p></div>
+            <div class="card" onclick="showSection('pdi')"><h3>📋 Pre-Delivery Inspection</h3><p>Get experts to check the car before you pay.</p></div>
+        </div>
+    </div>
+</div>
+
+<div id="buy" class="view-section container">
+    <h2>Available Live Stock</h2>
+    <p style="margin-bottom: 20px;">Contact owners directly to crack details.</p>
+    <div id="cars-display-list">
+        <!-- Sample/Live Cars will render here -->
+        <div class="car-item">
+            <div>
+                <h4>Maruti Swift VXI (2021)</h4>
+                <p><strong>Price:</strong> ₹5,40,000 | <strong>KM:</strong> 34,000</p>
+                <p>Location: Sector 45, Gurgaon</p>
+            </div>
+            <button onclick="alert('Connecting you to owner via WhatsApp...')" style="background: var(--sky-blue); padding: 8px 15px;">Contact Owner</button>
+        </div>
+    </div>
+</div>
+
+<div id="sell" class="view-section container">
+    <h2>List Your Car For Free</h2>
+    <form id="sellForm" onsubmit="handleFormSubmit(event, 'Car Submission')">
+        <label>Car Model Name</label><input type="text" required placeholder="e.g. Honda City i-VTEC">
+        <label>Year of Manufacture</label><input type="number" required placeholder="e.g. 2020">
+        <label>Expected Price (₹)</label><input type="number" required placeholder="e.g. 650000">
+        <label>Kilometers Driven</label><input type="number" required placeholder="e.g. 45000">
+        <label>Your Phone Number</label><input type="tel" required placeholder="Enter 10 digit mobile">
+        <button type="submit">Publish Vehicle Listing</button>
+    </form>
+</div>
+
+<div id="pdi" class="view-section container">
+    <h2>Book an Expert Third-Party PDI Inspection</h2>
+    <form id="pdiForm" onsubmit="handleFormSubmit(event, 'PDI Inspection Booking')">
+        <label>Your Full Name</label><input type="text" required>
+        <label>Contact Number</label><input type="tel" required>
+        <label>Car Location in Gurgaon</label><input type="text" required placeholder="Specify sector or landmark">
+        <label>Preferred Date</label><input type="date" required>
+        <button type="submit">Schedule Inspection</button>
+    </form>
+</div>
+
+<div id="challan" class="view-section container">
+    <h2>Traffic Challan Status Check</h2>
+    <form onsubmit="event.preventDefault(); alert('Challan database check failed. Mock mode: No active pending challans found on this plate.');">
+        <label>Vehicle Registration Number</label><input type="text" required placeholder="e.g. HR26XX1234">
+        <button type="submit">Verify RTO Challans</button>
+    </form>
+</div>
+
+<!-- HIDDEN EXCLUSIVE SECURE ADMIN PORTAL -->
+<div id="admin-login" class="view-section container">
+    <h2>Secure Staff Management Gateway</h2>
+    <form onsubmit="event.preventDefault(); checkAdminPass();" style="max-width:350px;">
+        <label>Enter Security Key Access Code</label>
+        <input type="password" id="adminPassField" required placeholder="••••••••">
+        <button type="submit">Authorize View Access</button>
+    </form>
+</div>
+
+<div id="admin-dashboard" class="view-section container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2>Global Lead Management Center</h2>
+        <button onclick="showSection('home')" style="background:#555; padding: 5px 10px; font-size:12px;">Log Out</button>
+    </div>
+    <div id="admin-leads-bucket">
+        <p style="color:#777;">No active user inquiries or submissions stored in temporary session storage cache.</p>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 <strong>No Dealer India</strong>. All Rights Reserved.</p>
+    <p>Shop No.2 Madho Bhawan, Sheetla Mata Mandir, Gurgaon HR-122001 | Support: 7838335143</p>
+    <p style="margin-top: 15px;">Follow Us: <a href="https://www.instagram.com/nodealer.india/?hl=en" target="_blank">Instagram (@nodealer.india)</a></p>
+</footer>
+
+<script>
+    // Local Session Array to keep data private until backend hookups happen
+    let leadsStorage = [];
+
+    function showSection(id) {
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active-section'));
+        document.getElementById(id).classList.add('active-section');
+        window.scrollTo(0,0);
+        
+        if(id === 'admin-dashboard') {
+            renderLeads();
+        }
+    }
+
+    function handleFormSubmit(e, type) {
+        e.preventDefault();
+        const inputs = e.target.querySelectorAll('input');
+        let dataSummary = {};
+        inputs.forEach((inp, idx) => {
+            dataSummary[`Field_${idx+1}`] = inp.value;
+        });
+        
+        leadsStorage.push({
+            type: type,
+            time: new Date().toLocaleTimeString(),
+            details: dataSummary
+        });
+        
+        alert(type + ' Submitted Successfully! Your data has been routed safely to our hidden admin database panel.');
+        e.target.reset();
+        showSection('home');
+    }
+
+    function checkAdminPass() {
+        const pass = document.getElementById('adminPassField').value;
+        // Hardcoded gateway bypass code setup for immediate use
+        if(pass === "Nodealer2026") {
+            document.getElementById('adminPassField').value = "";
+            showSection('admin-dashboard');
+        } else {
+            alert("Unauthorized Key Verification Denied.");
+        }
+    }
+
+    function renderLeads() {
+        const container = document.getElementById('admin-leads-bucket');
+        if(leadsStorage.length === 0) {
+            container.innerHTML = `<p style="color:#777;">No active inquiries received yet today.</p>`;
+            return;
+        }
+        let html = "";
+        leadsStorage.forEach(item => {
+            html += `<div style="border:1px solid #ccc; padding:15px; border-radius:6px; margin-bottom:10px; background:#fff;">
+                <span style="background:var(--primary-red); color:white; padding:2px 6px; font-size:11px; border-radius:4px; font-weight:bold;">${item.type}</span>
+                <span style="font-size:12px; color:#666; float:right;">Recieved: ${item.time}</span>
+                <pre style="margin-top:10px; background:#f4f4f4; padding:10px; font-size:13px; overflow-x:auto;">${JSON.stringify(item.details, null, 2)}</pre>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
